@@ -1,4 +1,4 @@
-from pydantic import AliasChoices, Field
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -24,6 +24,19 @@ class Settings(BaseSettings):
     jwt_secret_key: str = "dev-insecure-secret-change-me"
     jwt_algorithm: str = "HS256"
     jwt_expires_minutes: int = 60 * 24 * 7  # 7 days; no refresh-token flow in Phase 1
+
+    @field_validator("database_url")
+    @classmethod
+    def _normalize_database_url(cls, v: str) -> str:
+        # Tolerate common dashboard paste mistakes: whitespace, wrapping quotes,
+        # or the whole "DATABASE_URL=..." line pasted as the value.
+        v = v.strip().strip("'\"").strip()
+        if v.upper().startswith("DATABASE_URL="):
+            v = v.split("=", 1)[1].strip().strip("'\"")
+        # Heroku-style "postgres://" isn't a scheme SQLAlchemy 2.x accepts.
+        if v.startswith("postgres://"):
+            v = "postgresql://" + v[len("postgres://"):]
+        return v
 
 
 settings = Settings()
