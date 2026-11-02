@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Moodify Admin{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="cards">
+  <div class="card"><div class="value">{{ active_user_count }}/{{ user_count }}</div><div class="label">Active users</div></div>
+  <div class="card"><div class="value">{{ active_track_count }}/{{ track_count }}</div><div class="label">Active songs</div></div>
+  <div class="card"><div class="value">{{ playlist_count }}</div><div class="label">Playlists generated</div></div>
+</div>
+
+<h2>Top 5 trending <a class="link" href="/admin/trending" style="font-size: 13px;">(see all)</a></h2>
+<table>
+  <thead>
+    <tr><th>Track</th><th>Artist</th><th>Plays</th><th>Likes</th></tr>
+  </thead>
+  <tbody>
+    {% for row in top_tracks %}
+    <tr>
+      <td><a class="link" href="/admin/tracks/{{ row.track.id }}/edit">{{ row.track.title }}</a></td>
+      <td class="muted">{{ row.track.artist }}</td>
+      <td>{{ row.play_count }}</td>
+      <td>{{ row.like_count }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="muted">No listener feedback recorded yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

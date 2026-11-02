@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: moodify
+      POSTGRES_PASSWORD: moodify
+      POSTGRES_DB: moodify
+    ports:
+      # Host 5433 -> container 5432, so this doesn't collide with a native
+      # Postgres install already listening on 5432.
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ user.display_name }} — Moodify Admin{% endblock %}
+{% block content %}
+<h1><a href="/admin/users" class="link" style="text-decoration:none;">Users</a> / {{ user.display_name }}</h1>
+
+<div class="cards">
+  <div class="card"><div class="value">{{ playlist_count }}</div><div class="label">Playlists</div></div>
+  <div class="card"><div class="value">{{ feedback_count }}</div><div class="label">Feedback events</div></div>
+  <div class="card">
+    <div class="value"><span class="badge {{ 'active' if user.is_active else 'inactive' }}">{{ 'Active' if user.is_active else 'Suspended' }}</span></div>
+    <div class="label">Account status</div>
+  </div>
+</div>
+
+<h2>Edit details</h2>
+<form method="post" action="/admin/users/{{ user.id }}/edit">
+  <label for="display_name">Display name</label>
+  <input id="display_name" name="display_name" type="text" value="{{ user.display_name }}" required />
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" value="{{ user.email }}" required />
+  <button class="btn primary" type="submit" style="margin-top: 16px;">Save changes</button>
+</form>
+
+<h2>Account actions</h2>
+<form class="inline" method="post" action="/admin/users/{{ user.id }}/toggle-active">
+  <button class="btn" type="submit">{{ 'Suspend account' if user.is_active else 'Reactivate account' }}</button>
+</form>
+{% if user.id != current_admin_id %}
+<form class="inline" method="post" action="/admin/users/{{ user.id }}/toggle-admin">
+  <button class="btn" type="submit">{{ 'Remove admin access' if user.is_admin else 'Grant admin access' }}</button>
+</form>
+<form class="inline" method="post" action="/admin/users/{{ user.id }}/delete" onsubmit="return confirm('Permanently delete this user and all their playlists/feedback?');">
+  <button class="btn danger" type="submit">Delete user</button>
+</form>
+{% else %}
+<p class="muted">You can't modify admin access or delete your own account.</p>
+{% endif %}
+{% endblock %}

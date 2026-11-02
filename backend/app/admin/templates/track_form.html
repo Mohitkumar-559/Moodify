@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit song' if track else 'Add song' }} — Moodify Admin{% endblock %}
+{% block content %}
+<h1><a href="/admin/tracks" class="link" style="text-decoration:none;">Songs</a> / {{ 'Edit song' if track else 'Add song' }}</h1>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+<form method="post" action="{{ '/admin/tracks/' ~ track.id ~ '/edit' if track else '/admin/tracks/new' }}" enctype="multipart/form-data">
+  <label for="title">Title</label>
+  <input id="title" name="title" type="text" value="{{ track.title if track else '' }}" required />
+
+  <label for="artist">Artist</label>
+  <input id="artist" name="artist" type="text" value="{{ track.artist if track else '' }}" required />
+
+  <label for="album">Album (optional)</label>
+  <input id="album" name="album" type="text" value="{{ track.album if track else '' }}" />
+
+  <label for="audio_file">Upload audio file (MP3) — sets duration automatically</label>
+  <input id="audio_file" name="audio_file" type="file" accept="audio/*" />
+  {% if track and track.preview_url %}<p class="muted">Current: <a class="link" href="{{ track.preview_url }}" target="_blank">{{ track.preview_url }}</a></p>{% endif %}
+
+  <label for="duration_sec">Duration (seconds) — only used if no file is uploaded</label>
+  <input id="duration_sec" name="duration_sec" type="number" min="0" value="{{ track.duration_sec if track else 0 }}" />
+
+  <label for="preview_url">Or: external audio URL (only used if no file is uploaded)</label>
+  <input id="preview_url" name="preview_url" type="text" value="{{ track.preview_url if track else '' }}" />
+
+  <label for="cover_url">Cover art URL (optional)</label>
+  <input id="cover_url" name="cover_url" type="text" value="{{ track.cover_url if track else '' }}" />
+
+  <label for="license_type">License type (only if downloadable)</label>
+  <select id="license_type" name="license_type">
+    <option value="" {{ 'selected' if not track or not track.license_type }}>—</option>
+    {% for value in ['royalty_free', 'creative_commons', 'artist_opt_in'] %}
+    <option value="{{ value }}" {{ 'selected' if track and track.license_type == value }}>{{ value }}</option>
+    {% endfor %}
+  </select>
+
+  <div class="checkbox-row">
+    <input id="is_downloadable" name="is_downloadable" type="checkbox" value="true" {{ 'checked' if track and track.is_downloadable }} />
+    <label for="is_downloadable" style="margin: 0;">Downloadable offline (FR-08 — only for licensed/owned content)</label>
+  </div>
+
+  <h2>Mood tags</h2>
+  <p class="muted">Set a weight (0–1) for each mood this track matches. 0 means not linked.</p>
+  {% for mood in moods %}
+  <label for="mood_weight_{{ mood.id }}">{{ mood.name }}</label>
+  <input id="mood_weight_{{ mood.id }}" name="mood_weight_{{ mood.id }}" type="number" min="0" max="1" step="0.05" value="{{ mood.weight }}" style="max-width: 120px;" />
+  {% endfor %}
+
+  <button class="btn primary" type="submit" style="margin-top: 24px;">{{ 'Save changes' if track else 'Add song' }}</button>
+</form>
+{% endblock %}

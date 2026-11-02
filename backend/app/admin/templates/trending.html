@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Trending — Moodify Admin{% endblock %}
+{% block content %}
+<h1>Trending</h1>
+<p class="muted">Ranks tracks by listener activity captured via FR-07 feedback (like/dislike/skip/completed).</p>
+
+<div style="margin-bottom: 16px;">
+  <a class="btn {{ 'primary' if sort == 'plays' }}" href="/admin/trending?sort=plays">Most listened</a>
+  <a class="btn {{ 'primary' if sort == 'likes' }}" href="/admin/trending?sort=likes">Most liked</a>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Track</th>
+      <th>Artist</th>
+      <th>Plays</th>
+      <th>Likes</th>
+      <th>Dislikes</th>
+      <th>Skips</th>
+      <th>Completed</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>
+      <td><a class="link" href="/admin/tracks/{{ row.track.id }}/edit">{{ row.track.title }}</a></td>
+      <td class="muted">{{ row.track.artist }}</td>
+      <td>{{ row.play_count }}</td>
+      <td>{{ row.like_count }}</td>
+      <td class="muted">{{ row.dislike_count }}</td>
+      <td class="muted">{{ row.skip_count }}</td>
+      <td class="muted">{{ row.completed_count }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">No listener feedback recorded yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

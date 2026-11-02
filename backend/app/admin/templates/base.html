@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Moodify Admin{% endblock %}</title>
+  <style>
+    :root {
+      --ground: #14121F;
+      --surface: #1E1B2E;
+      --border: #322D45;
+      --divider: #241F35;
+      --text-primary: #F5F3F7;
+      --text-muted: #9A94AA;
+      --accent-energy: #FF6B4A;
+      --accent-calm: #35C9A6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--ground);
+      color: var(--text-primary);
+      font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+      display: flex;
+      min-height: 100vh;
+    }
+    nav.sidebar {
+      width: 200px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+    }
+    nav.sidebar .brand {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    nav.sidebar a {
+      display: block;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    nav.sidebar a:hover, nav.sidebar a.active {
+      background: var(--divider);
+      color: var(--text-primary);
+    }
+    main {
+      flex: 1;
+      padding: 32px 40px;
+      max-width: 1100px;
+    }
+    h1 { font-size: 24px; margin: 0 0 24px; }
+    h2 { font-size: 16px; color: var(--text-muted); margin: 32px 0 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--divider);
+      font-size: 14px;
+    }
+    th { color: var(--text-muted); font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge.active { background: rgba(53,201,166,0.15); color: var(--accent-calm); }
+    .badge.inactive { background: rgba(255,107,74,0.15); color: var(--accent-energy); }
+    .btn {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--divider);
+      color: var(--text-primary);
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn.primary { background: var(--accent-energy); border-color: var(--accent-energy); color: var(--ground); font-weight: 600; }
+    .btn.danger { background: transparent; border-color: var(--accent-energy); color: var(--accent-energy); }
+    form.inline { display: inline; }
+    .cards { display: flex; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      min-width: 140px;
+    }
+    .card .value { font-size: 28px; font-weight: 700; }
+    .card .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    label { display: block; font-size: 13px; color: var(--text-muted); margin: 14px 0 4px; }
+    input[type=text], input[type=email], input[type=password], input[type=number], select, textarea {
+      width: 100%;
+      max-width: 420px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--ground);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+    input[type=file] { color: var(--text-muted); font-size: 13px; }
+    .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+    .checkbox-row input { width: auto; }
+    .error { color: var(--accent-energy); font-size: 13px; margin-bottom: 12px; }
+    .muted { color: var(--text-muted); font-size: 13px; }
+    a.link { color: var(--accent-calm); }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">Moodify Admin</div>
+    <a href="/admin" class="{{ 'active' if active == 'dashboard' }}">Dashboard</a>
+    <a href="/admin/users" class="{{ 'active' if active == 'users' }}">Users</a>
+    <a href="/admin/tracks" class="{{ 'active' if active == 'tracks' }}">Songs</a>
+    <a href="/admin/trending" class="{{ 'active' if active == 'trending' }}">Trending</a>
+    <form method="post" action="/admin/logout" style="margin-top: 24px;">
+      <button class="btn" type="submit" style="width: 100%;">Log out</button>
+    </form>
+  </nav>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

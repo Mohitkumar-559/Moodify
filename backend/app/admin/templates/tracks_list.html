@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Songs — Moodify Admin{% endblock %}
+{% block content %}
+<h1>Songs</h1>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+  <form method="get">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search by title or artist" style="max-width: 280px;" />
+    <button class="btn" type="submit">Search</button>
+  </form>
+  <a class="btn primary" href="/admin/tracks/new">+ Add song</a>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Artist</th>
+      <th>Album</th>
+      <th>Duration</th>
+      <th>Audio</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for track in tracks %}
+    <tr>
+      <td>{{ track.title }}</td>
+      <td>{{ track.artist }}</td>
+      <td class="muted">{{ track.album or '—' }}</td>
+      <td class="muted">{{ (track.duration_sec // 60) }}:{{ '%02d' % (track.duration_sec % 60) }}</td>
+      <td class="muted">{{ 'Yes' if track.preview_url else 'No' }}</td>
+      <td><span class="badge {{ 'active' if track.is_active else 'inactive' }}">{{ 'Active' if track.is_active else 'Inactive' }}</span></td>
+      <td style="white-space: nowrap;">
+        <a class="btn" href="/admin/tracks/{{ track.id }}/edit">Edit</a>
+        <form class="inline" method="post" action="/admin/tracks/{{ track.id }}/toggle-active">
+          <button class="btn" type="submit">{{ 'Deactivate' if track.is_active else 'Activate' }}</button>
+        </form>
+        <form class="inline" method="post" action="/admin/tracks/{{ track.id }}/delete" onsubmit="return confirm('Delete this song? It will be removed from any playlists that include it.');">
+          <button class="btn danger" type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">No songs found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
